@@ -23,6 +23,6 @@ often managed through a specific framework by the operating system.
 > * Key Differences:
 >   * **Scope and Functionality**, System-level services are often lower-level and more concerned with the operation of the hardware and core software components.
 > High-level services in development are usually focused on specific business needs and functionnalities.
->   * **Interaction and Itegration**, System services usually operate independentaly of direct user interactions and are often managed by the system or network administrators.
+>   * **Interaction and Integration**, System services usually operate independentaly of direct user interactions and are often managed by the system or network administrators.
 > In contrast, high-level application services are designed to interact with other parts of an application or external services to deliver complex functionnalities.
 >
