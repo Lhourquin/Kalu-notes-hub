@@ -177,4 +177,30 @@ which forwards the request to the internet.
 devices on your local network won't be able to communicate with anything
 outside the network.
 
-## Modems
+## Modems (short for **modulator-demodulator** )
+
+* Device that converts or translate basically different types of data communication system,
+different types of signals used,
+into a format that can be understood by our local network,
+typically **Ethernet (tcp/ip)** (i.e 5g to ethernet tcp/ip, fiber optic to ethernet tcp/ip etc.).
+* **Modulation** Converts digital data from your computer or network into analog signals (or another format)
+for transmission over the internet infrastructure (e.g, telephone lines,
+fiber optics, cable lines, 5G)
+* **Demodulation** Converts incoming analog or other types of signals from the internet into digital data
+that your devices can understand.
+* Modems Change Network Types
+* Cable Modem -> Ethernet
+* Fiber Optic Modem -> Ethernet
+
+## NAT (Network Address Translation) and Port Forwarding
+
+* NAT is a technique that allows multiple devices on a private network (with private ip address) to share a single IP address to communicate with the internet
+* With NAT, a router translate between private IP addresses (like 192.168.x.x) inside
+a local network and the single public IP address assigned to that network by the internet service Provider
+(ISP), This allows to an entire home or business network to use just one public IPv4 address to access the internet.
+* NAT killed IPv6... Not really, but NAT reducing the need for each device to have its own unique public IP address.
+This "stretched" the lifespan of IPv4, postponing the exhaustion problem.
+* Numerous Connected Devices can share the same External IP Address.
+The NAT Enabled Router will automatically route traffic to appropriate Hosts.
+* Port Forwarding forwards inbound TCP Port Traffic to Specific Hosts
+* BEWARE - Carrier NAT..
