@@ -110,3 +110,71 @@ This is the protocols, the language alows systems to talk to each other.
   |24-bit block | 10.0.0.0 0 - 10.255.255.255 | 16 777 216 | 10.0.0.0/8 (255.0.0.0)| 24 bits | 8 bits | single class A network |
   |20-bit block | 172.16.0.0 - 172.31.255.255 | 1 048 576 | 172.16.0.0/12 (255.240.0.0)| 20 bits | 12 bits | 16 contiguous class B networks |
   |16-bit block | 192.168.0.0 - 192.168.255.255 | 65 536 | 192.168.0.0/16 (255.255.0.0)| 16 bits | 16 bits | 256 contiguous class C networks |
+
+* These 3 ranges of addresses are not available in public,
+not routable on the internet, menaning that any device using these
+IPs can't communicate directly with the internet without
+some form of translation (like NAT)
+
+* Reserved, so they will never be assigned by an Internet Service Provider (ISP)
+to a public-facing device or server.
+
+Example:
+
+* A web server on the internet will never have an IP like 192.168.1.100
+because that's in the private IP range.
+It would have a public IP like 203.0.113.5 instead.
+
+## Switch and ARP (Address Resolution Protocol)
+
+* Switches are layer 2 networking
+* Switches contain MAC Address Tables
+* ARP - Address Resolution Protocol - Resolves MAC address to IP Address
+* Example - Run: arp -a (this command that give us the IP addresses and all
+the MAC addresses for any communication that this computer has seen,
+that's not necessarily all the computers that are on the network,
+but all the computers, that this computer has seen.)
+
+## TCP ports
+
+* Port is like a door, an entry point to access to a specific type of service running on the same IP address, standard port exist for specific protocol who run service.
+* Each services listen on a specific port number, so that incoming data can be directed to the correct application
+* IP address to locate the device, port number to access a specific service on that device
+* Ports ensure that multiple services can run on the same IP address without confusion
+* By assiging specific ports to different services, the system can direct network traffic correctly.
+* 192.168.1.1:8080
+* Every Protocol uses a TCP Port.
+* These are generally preconfigured, but can be manually set.
+* SMTP - 25
+* HTTP - 80
+* HTTPS - 443
+* FTP - 20
+* SSH - 22
+
+> [!WARNING]
+> Open ports can also be potential entry points for attackers, so it's important to close unnecessary ports or use a firewall to manage access.
+
+## Routers and Default Gateways
+
+* Routers Connect Network Together: router is a device that connect different networks together,
+typically your local network (LAN) to the internet (WAN)
+* Within local network, devices can communicate directly with each other (using switches and IP addresses),
+but when a device needs to send data to different network (like accessing a website on the internet),it needs
+the router to handle that communication.
+
+* The Defaults Gateway is the Router a Host communicates with is a computer
+cannot be found on the LAN.
+* The default gateway essentially the IP address of the router on your local network (LAN) that serves as
+the access point to other network, like the internet
+* When a computer (or host) on your network tries to communicate with a device or service that isn't on the local network,
+it sends the traffic to the **default gateway** (the router), which forwards it to the correct destination.
+* Example : In a home network, your computer has an IP address like 192.168.1.10, your router (default gateway) has an IP address like 192.168.1.1.
+When your computer tries to access a website (say 8.8.8.8) it doesn't know
+how to reach it directly, so it sends the request to the **default gateway** (192.168.1.1),
+which forwards the request to the internet.
+* The default gateway acts as the **doorway out of your local network** to the broader internet (or other network)
+* If the router ( default gateway) is misconfigured or unavailable,
+devices on your local network won't be able to communicate with anything
+outside the network.
+
+## Modems
