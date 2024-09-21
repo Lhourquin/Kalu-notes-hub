@@ -202,5 +202,30 @@ a local network and the single public IP address assigned to that network by the
 This "stretched" the lifespan of IPv4, postponing the exhaustion problem.
 * Numerous Connected Devices can share the same External IP Address.
 The NAT Enabled Router will automatically route traffic to appropriate Hosts.
-* Port Forwarding forwards inbound TCP Port Traffic to Specific Hosts
+* Port Forwarding forwards inbound TCP Port Traffic to Specific Hosts, like a web servers you want to expose in public, you have to specify your public IP address at specific port refers to your web server at your private ip address at specific port
 * BEWARE - Carrier NAT..
+* Carrier NAT, CGNAT (Carrier-Grade Network Address Translation) is a techno used by ISP to share a single public address amoung multiple customers.
+* Due to the shortage of IPv4 addresses, ISPs use Carrier NAT to assign private IP addresses to customers and translate their traffic to a shared public IP when they access the internet. This is similar to regular NAT but happens at the ISP level, not just within your home network.
+  * Your router has a private IP assignerd by the ISP
+  * The ISP uses Carrier NAT to translate your private IP (and many other customers private IP)
+    to a shared public IP when sending the traffic to the internet
+    * Downsides : shared ip issues, Since many users share thje same public IP, things like port forwarding and peer-to-peer application can be problematic
+    * traceability : It make  identifying individual users harder because they share one public IP (generally is the case with low cost isp)
+
+## DMZ (Demilitarized zone)
+
+* Section of your network that's exposed to the public internet
+* Isolated from your private internal network
+* typically used for **public facing servers** (like web, email, FTP servers) to add extra layer of security
+* Allows external users to access a sevice (like website) without giving them direct
+access to your internal network (where sensitive data are located)
+* Partially exposed to the internet
+* Internal network protected from external access
+
+## Internet Facing Static IP addresses
+
+* Server is "directly" connected to the internet
+* No need for Port Forwarding
+* may cost extra money
+* May be limited or not available from vendor
+  * Many ISP's will sell no, or limited static IP Addresses to customers
