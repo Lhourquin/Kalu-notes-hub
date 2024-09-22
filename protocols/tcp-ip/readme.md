@@ -222,10 +222,83 @@ access to your internal network (where sensitive data are located)
 * Partially exposed to the internet
 * Internal network protected from external access
 
-## Internet Facing Static IP addresses
+## Internet-Facing Static IP addresses
 
 * Server is "directly" connected to the internet
 * No need for Port Forwarding
 * may cost extra money
 * May be limited or not available from vendor
   * Many ISP's will sell no, or limited static IP Addresses to customers
+
+## Firewalls
+
+* security device or software that monitors and controls incoming and outgoing network traffic
+based on pre-etablished rules.
+* Its primary purpose is to protect your network or device from
+unauthorized access while allowing legitimate traffic to passs through
+* Traffic filtering
+* Network segmentation
+* Logging and Monitoring
+* Preventing attacks
+  * DDOS
+  * Port Scanning
+  * Unauthorized access
+* Block TCP Ports
+* Inbound/Outbound
+* Hardware/Software
+* Servers should be configured so only specific Hosts can connect on specific TCP Ports
+* BE CAREFUL configuring Software Firewalls on test systems..
+  * Verify you setup works BEFORE implementing firewalls
+
+## DNS (Domain Name Service)
+
+* Like the **phonebook of the internet**
+* Translate human-readable domain names (like cnn.com)
+into IP addresses (like 151.101.3.5) that computer use to
+identify each other on the network
+* Resolves Fully Qualified Domain Name (FQDN's) to IP Addresses
+* SERVER -> 192.168.1.10
+* cnn.com -> 151.101.3.5
+* Resolution Order
+  * Hosts file: Your computer first check its local hosts file (a file where you can manually map domain name to IP addresses) to see if is already defined
+  * Local DNS: If the hosts file does't have the answer, your computer checks the local DNS cache to see if has previously resolved the domain
+  * Remote DNS (ISP, CloudFlare, Google): if the domain isn't in the hosts file or local cache, the request goes to a remote dns server, often provided by your ISP, Google DNS (8.8.8.8), CloudFlare (1.1.1.1). which resolves the domain
+* Reverse DNS resolves IP Addresses to FQDN's to Prevent Spoofing: Does the opposite of regular DNS, it resolves an
+IP Address back to a domain anme (FQDN) This is useful for verifying that an IP address is associated with a
+legitimate domain, often for email servers or to prevent spoofing in security checks.
+
+## DHCP (Dynamic Host Configuration Protocol)
+
+* Dynamic IP Addresses
+* Scope - Pool of IP Addresses that DHCP can assign from
+* Lease Length - How long before Lease Expires
+* Reserved Addreses /Static Addresses - Addresses reserved for devices that will have IP infrastructure servers...
+* DHCP and DNS servers should talk to each other, generally they willl be the same server
+* Use FQDN's where possible in code so that if the Server IP changes it will be seamless with a DNS update
+
+## VPN (virtual private network)
+
+* Create a Tunnel from a computer external to a LAN to make it logically appear on the LAN
+  * allows you to use local file servers, networked printers, etc.
+  * Creates major vulnerabilities if VPN account is compromised
+  * Flaky ISP Connections can cause major issues
+* generally used to bypass geo restrictions to access restricted content on netflix
+* In your project if you collect IP Address information what you receive will be from VPN provider, not the actual users external address
+* Some older VPN protocols, like PPTP and L2TP/IPsec, are now considered insecure due to known vulnerabilities. Attackers can break these protocols and potentially intercept or modify the data passing through the VPN.
+* Modern VPN protocols like WireGuard or OpenVPN are still considered secure, but not all VPN providers use them.
+* DNS leaks or IP leaks occur when, despite using a VPN, your real IP address or DNS requests are exposed. This can happen due to misconfigurations or limitations in the VPN software or network.
+* Some VPNs fail to protect against these leaks, meaning your real location or identity could be exposed, defeating the privacy purpose of using a VPN.
+* Rise of Alternatives to VPNs:
+
+  * Zero Trust Architecture: Many organizations are moving towards Zero Trust Network Access (ZTNA) models, which don’t rely on traditional VPNs. This approach continuously authenticates users and devices, treating every connection as untrusted by default, making it more secure than traditional VPNs.
+
+  * Secure Access Service Edge (SASE): A modern alternative that combines network security (firewalls, secure web gateways) with VPN-like remote access, but it uses more sophisticated methods to ensure security.
+
+  * Proxy-based solutions and cloud-based security models are often seen as better alternatives to VPNs because they offer more granular access control and monitoring.
+
+## Command Line tools
+
+* ping
+* arp -a
+* traceroute
+* ifconfig /ipconfig/ ip address
