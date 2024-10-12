@@ -1,5 +1,4 @@
-
-# Podcast API with nestjs
+# Nestjs
 
 This project aim to handle the fundamental of nestjs framework, step by step in this readme I will explain how it work, core concept to get good understanding of this technologoies.
 
