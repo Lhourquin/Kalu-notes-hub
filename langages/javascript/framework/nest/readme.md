@@ -12,7 +12,9 @@ In Nest, Decorators are everywhere, so this why need to see this notion at first
 
 These functions can be apply to classes, methods, and even method parameter. A decorators will add extra functionalities, metadata to the class, method or parameters they apply to, and some decorators will have extra parameters to control they behavior. That we can see on the `app.module.ts` file:
 
-```ts app.module.ts
+`app.module.ts`:
+
+```ts
 @Module({
   imports: [],
   controllers: [AppController],
@@ -23,23 +25,23 @@ export class AppModule {}
 
 This `Decorators` take a configuration object as argument, to apply a specific behavior to the `AppModule` class. It is use specifically for `Module` classes. Explanation of the code above:
 
-- `@Module` organizes related controllers, services, and other elements.
+- ```@Module``` organizes related controllers, services, and other elements.
 
-- `imports: []` allowing to import other modules into this module. In this case, it's empty because we don't importing anything.
+- ```imports: []``` allowing to import other modules into this module. In this case, it's empty because we don't importing anything.
 
-- `controllers: [AppController]` is the lists of controllers that are part of this module. In this case, we have `AppController`, which likely handles routing and requests.
+- ```controllers: [AppController]``` is the lists of controllers that are part of this module. In this case, we have ```AppController```, which likely handles routing and requests.
 
-- `providers: [AppService]` is the lists of services (like `AppService`) that can be **injected** into controllers or other providers via dependency injection. These services are used to handle business logic, connect to databse, or interact with external API's.
+- ```providers: [AppService]``` is the lists of services (like ```AppService```) that can be **injected** into controllers or other providers via dependency injection. These services are used to handle business logic, connect to databse, or interact with external API's.
 
-- `AppModule` is the class that becomes the root module of our application. This is where NestJS looks for how to wire the application components together.
+- ```AppModule``` is the class that becomes the root module of our application. This is where NestJS looks for how to wire the application components together.
 
 Types of `Decorators`:
 
 - **Class Decorators**: We have other `Decorators` for different type of class like `@Controllers`, `@Injectable`, etc.
 
 - **Method Decorators**: Also for methods as mentioned above, often use for routes or middlewares.
-  For instance, `@Get()`, `@Post()`, `@useGuards()`, etc.
-- **Parameter Decorators**: Applied to parameters to inject specific types of data. Examples include `@Params()`, `@Body()`, and `@Query`.
+  For instance, ```@Get()```, ```@Post()```, ```@useGuards()```, etc.
+- **Parameter Decorators**: Applied to parameters to inject specific types of data. Examples include ```@Params()```, ```@Body()```, and ```@Query```.
 
 - **Property Decorators**: Used to inject dependencies into class properties, like `@Inject()` or `@Optional()`.
 
@@ -49,6 +51,8 @@ Nestjs is opiniated, so we have some constraint to force us to write and structu
 
 To create other module, we can use the CLI to generate them as follows:
 
+CLI:
+
 ```
 ❯ nest g module topics
 CREATE src/topics/topics.module.ts (83 bytes)
@@ -56,6 +60,8 @@ UPDATE src/app.module.ts (393 bytes)
 ```
 
 The command above generate a module topics, with a folder called `topics`, which contains `topics.module.ts` file. Also, at the same time, the root module `AppModule` is updated and import automatically `TopicsModule` as follows:
+
+`app.module.ts`
 
 ```ts app.module.18:56:00
 @Module({
@@ -66,6 +72,8 @@ The command above generate a module topics, with a folder called `topics`, which
 ```
 
 So each time we create a new module, it is update the root module `AppModule`, another examples by creating `episodes` and `config` modules for our podcast api.
+
+CLI:
 
 ```
 ❯ nest g module config
@@ -78,6 +86,8 @@ UPDATE src/app.module.ts (469 bytes)
 ```
 
 Now this how our `AppModule` looks like:
+
+`app.module.ts`:
 
 ```ts app.module.ts
 import { Module } from '@nestjs/common';
@@ -100,6 +110,8 @@ We can represent the modules of our application in a graph as follows:
 
 The visual graph above is a hierarchical structure of `AppModule` as the root, This is the classic behavior when you create new modules in your app with the CLI. But, as mentionned earlier,"*root module can use other modules which themselve can use other modules and depends on it and so on. Each module will encapsulate a set of related capabilities, is can be a particular feature or a domain.*", that means, we can also decided to inject a dependencies for a specific module we want, for instance, we want to use `ConfigModule` for `EpisodesModule` and `TopicsModule` only, so we will change our modules as follows:
 
+`app.module.ts`:
+
 ```ts app.module.ts
 
 import { Module } from '@nestjs/common';
@@ -118,6 +130,8 @@ export class AppModule { }
 
 Here we remove `ConfigModule` from `AppModule`, now we will add `ConfigModule` to both `TopicsModule` and `EpisodesModule`:
 
+`epidoes.module.ts`:
+
 ```ts episodes.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule } from 'src/config/config.module';
@@ -127,6 +141,8 @@ import { ConfigModule } from 'src/config/config.module';
 })
 export class EpisodesModule { }
 ```
+
+`topics.module.ts`:
 
 ```ts topics.module.ts
 import { Module } from '@nestjs/common';
