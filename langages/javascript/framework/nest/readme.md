@@ -130,7 +130,7 @@ export class AppModule { }
 
 Here we remove `ConfigModule` from `AppModule`, now we will add `ConfigModule` to both `TopicsModule` and `EpisodesModule`:
 
-`epidoes.module.ts`:
+`episodes.module.ts`:
 
 ```ts episodes.module.ts
 import { Module } from '@nestjs/common';
@@ -163,3 +163,106 @@ This approach allows to create more **modular** and **maintainable**  structure,
 The imports property inside `@Module` decorators specify which modules are available wihtin the scope of the current module.When we list a module in the `imports` array, we make the exported classes, providers, and services from that module available in the current module. This setup enable modular organization by defining what dependencies (other modules) the current modules relies on.
 
 The main purpose of a module is to encapsulate a group of related classes, such as controllers and services, so that they can work together or domain.
+
+### Controllers
+
+`Controllers` are the components who handle incoming request, that a class decatorated with `@Controllers` decorator, as we can see in the `AppController`:
+
+`app.controller.ts`:
+
+```ts
+import { Controller, Get } from '@nestjs/common';
+import { AppService } from './app.service';
+
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();
+  }
+}
+```
+
+We can create a new controllers for `episodes` with the following command:
+
+CLI:
+
+```
+❯ nest g co episodes
+CREATE src/episodes/episodes.controller.spec.ts (506 bytes)
+CREATE src/episodes/episodes.controller.ts (105 bytes)
+UPDATE src/episodes/episodes.module.ts (272 bytes)
+```
+
+As we can see two files as be created, one for the controller and one to test the controllers(`episodes.controller.spec.ts`), and `EpisodesModule` was updated:
+
+`episodes.controller.ts`:
+
+```ts
+
+import { Controller } from '@nestjs/common';
+
+@Controller('episodes')
+export class EpisodesController {}
+```
+
+`episodes.module.ts`:
+
+```ts
+import { Module } from '@nestjs/common';
+import { ConfigModule } from 'src/config/config.module';
+import { EpisodesController } from './episodes.controller';
+
+@Module({
+    imports: [ConfigModule],
+    controllers: [EpisodesController],
+})
+export class EpisodesModule { }
+```
+
+As we can see in `EpisodesModule`, the new controller created was imported automatically, that allows to link all components together with service for business logic we will see later, the controller received the request, call the method from the service to handle business logic, and return the result to the client.
+
+In our `EpisodesController`, we want to handle incoming request, so to do that, we should use some methods `decorators` to specify what kind of `HTTP` request we attempts: `GET` request ? `POST` request ? As mentionned earlier in `@Decorators` section, we have `@Get()` to handle `GET` `HTTP` request, `@Post()` etc. So let's go to do that:
+
+`episodes.controller.ts`
+
+```ts
+import { Controller } from '@nestjs/common';
+import { Get } from '@nestjs/common';
+
+@Controller('episodes')
+export class EpisodesController {
+    @Get()
+    getHello(): string {
+        return 'Hello';
+    }
+}
+```
+
+As we can see above, the `@Controller` decorators have already specify the name of the specific route `episodes` to receive all  request for `EpisodesController`, that the endpoint. We have imported the `@Get` methods decorators and they add it above our `getHello()` methods. In `@Get()` decorators, we can add some arguments to specify what we attempts to specify the endpoint of the request, here if we let that empty by defaults, the `HTTP` request with `GET` call the method `getHello()` and will return the string `Hello`.
+
+If we want to add some other endpoint, for instance to get the list of podcast available, we should add parameters to the `@Get` decorators as follows:
+
+`episodes.controller.ts`
+
+```ts
+import { Controller } from '@nestjs/common';
+import { Get } from '@nestjs/common';
+
+@Controller('episodes')
+export class EpisodesController {
+    @Get()
+    getHello(): string {
+        return 'Hello';
+    }
+
+    @Get('/list')
+    getList(): string {
+        return 'list';
+    }
+}
+```
+
+As we can see, we add `list` into `@Get()` decorators, now with the endpoint `episodes/list` we return the list (for now is just a `string`) to get the list of podcast available.
