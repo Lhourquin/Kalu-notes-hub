@@ -266,3 +266,72 @@ export class EpisodesController {
 ```
 
 As we can see, we add `list` into `@Get()` decorators, now with the endpoint `episodes/list` we return the list (for now is just a `string`) to get the list of podcast available.
+
+### Providers
+
+Nearly everything in Nest is a provider. Providers are classes that have the injector decorator, and this means that they can be injected, to be more precise, they can be injected in other classes. To see that, will create a service for `episodes`:
+
+CLI
+
+```
+❯ nest g s episodes
+CREATE src/episodes/episodes.service.spec.ts (474 bytes)
+CREATE src/episodes/episodes.service.ts (92 bytes)
+UPDATE src/episodes/episodes.module.ts (360 bytes)
+```
+
+`episodes.service.ts`
+
+```typescript
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class EpisodesService {}
+```
+
+`episodes.module.ts`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { ConfigModule } from 'src/config/config.module';
+import { EpisodesController } from './episodes.controller';
+import { EpisodesService } from './episodes.service';
+
+@Module({
+    imports: [ConfigModule],
+    controllers: [EpisodesController],
+    providers: [EpisodesService],
+})
+export class EpisodesModule { }
+```
+
+`episodes.service.spec.ts`
+
+```typescript
+import { Test, TestingModule } from '@nestjs/testing';
+import { EpisodesService } from './episodes.service';
+
+describe('EpisodesService', () => {
+  let service: EpisodesService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [EpisodesService],
+    }).compile();
+
+    service = module.get<EpisodesService>(EpisodesService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+});
+```
+
+The CLI will automatically add the service in the appropriate folder, and they automatically add the new service to the providers list in the `EpisodesModule`. This is crucial to add the service into the `providers` attribute to ties all the components (controllers, services etc), without that, we cannot inject the dependencies and use a method from a service we want in the controllers.
+
+`episodes.service.ts` contains the **business logic**, is where we handle the data (from a database etc.) and create new method. That allows to isolating logic from controllers.
+
+`providers` are not only used for services, but also for any classes that need to be shared and injected across the applicationm such as **repositories, custom utilities, guards, etc** .
+
+We was talk about **dependency injection**, so now we will see how to use them with the **dependency injection**
