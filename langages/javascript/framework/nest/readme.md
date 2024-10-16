@@ -368,7 +368,7 @@ import { EpisodesModule } from './episodes/episodes.module';
 export class AppModule { }
 ```
 
-The root module have both import `TopicsModule` and `EpisodesModule`. Remember, we have earlier create a `ConfigModule`, which is imported into `TopicsModule` and `EpisodesModule`, so let's see that inside `EpisodesModule`.
+The root module have both import `TopicsModule` and `EpisodesModule`. Remember, we have earlier created a `ConfigModule`, which is imported into `TopicsModule` and `EpisodesModule`, so let's see that inside `EpisodesModule`.
 
 `episodes.modules.ts`
 
@@ -437,7 +437,7 @@ export class EpisodesController {
 }
 ```
 
-In Nest, we don't create an instance of the `EpisodesService` inside the controller. The service will be **injected**  by Nest at runtime. One way to inject the service at the controller, is by using the constructor in our class as we can see above. We add the `private` parameter, following by an alias `episodesService` of type `EpisodesService`. By do that, Nest will creating an instance of the service, and inject it into our `EpisodesController` class. That's how dependency injection is in NestJS.
+In Nest, we don't create an instance of the `EpisodesService` inside the controller. The service will be **injected**  by Nest at runtime. One way to inject the service at the controller, is by using the constructor in our class as we can see above. We add the `private` parameter, followed by an alias `episodesService` of type `EpisodesService`. By doing that, Nest will creating an instance of the service, and inject it into our `EpisodesController` class. That's how dependency injection is in NestJS.
 
 By using the `@Injectable()` decorator above our `EpisodesService` class, we can say is a **provider class**. As we see earlier, we ensure it is declared on the `EpisodesModule` by using the `providers: []`  attribute, that allows us to inject the service inside the `EpisodesController` with a `constructor`. And now Nest take care of wiring things up at runtime.
 
@@ -503,7 +503,7 @@ import { ConfigService } from './config.service';
 export class ConfigModule {}
 ```
 
-`exports` allows us to use the `ConfigService` and inject them into another service or controller. Why we should do that ? Because we want to instanciate the `ConfigModule` only at once and use the `getConfig` method everywhere we want by use the independencies injecton, by the way the state will not change each time and it will be persistant, is particulary useful for configuration like here, or for database connection for example.
+`exports` allows us to use the `ConfigService` and inject them into another service or controller. Why we should do that ? Because we want to instantiate the `ConfigModule` only once and use the `getConfig` method everywhere we want by use the injection dependency, by the way the state will not change each time and it will be persistant, is particularly useful for configuration like here, or for database connection for example.
 
 Now, as we made earlier by `imports` `ConfigModule` into `EpisodesModule`, we can inject the dependency into `EpisodesService` at same way we made to inject `EpisodesService` into `EpisodesController` and create a method `getConfig` who use the method of `ConfigService`:
 
