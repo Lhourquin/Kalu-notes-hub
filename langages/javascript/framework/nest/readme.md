@@ -629,39 +629,39 @@ Ran all test suites matching /episodes.controller/i.
 ```
 
 ```> [!WARNING]
-> Be aware, if you have this error, you need to change the path to be relative, when we use the CLI, nest generate a absolute path and this trigger that error.
-❯ npm run test episodes.controller
-
-> my-podcast-api@0.0.1 test
-> jest episodes.controller
-
- FAIL  src/episodes/episodes.controller.spec.ts
-  ● Test suite failed to run
-
-    Cannot find module 'src/config/config.service' from 'episodes/episodes.service.ts'
-
-    Require stack:
-      episodes/episodes.service.ts
-      episodes/episodes.controller.ts
-      episodes/episodes.controller.spec.ts
-
-      1 | import { Injectable } from '@nestjs/common';
-    > 2 | import { ConfigService } from 'src/config/config.service';
-        | ^
-      3 |
-      4 | @Injectable()
-      5 | export class EpisodesService {
-
-      at Resolver._throwModNotFoundError (../node_modules/jest-resolve/build/resolver.js:427:11)
-      at Object.<anonymous> (episodes/episodes.service.ts:2:1)
-      at Object.<anonymous> (episodes/episodes.controller.ts:3:1)
-      at Object.<anonymous> (episodes/episodes.controller.spec.ts:2:1)
-
-Test Suites: 1 failed, 1 total
-Tests:       0 total
-Snapshots:   0 total
-Time:        1.895 s
-Ran all test suites matching /episodes.controller/i.
+>   > Be aware, if you have this error, you need to change the path to be relative, when we use the CLI, nest generate a absolute path and this trigger that error.
+>   ❯ npm run test episodes.controller
+>
+>   > my-podcast-api@0.0.1 test
+>   > jest episodes.controller
+>
+>   FAIL  src/episodes/episodes.controller.spec.ts
+>   ● Test suite failed to run
+>
+>       Cannot find module 'src/config/config.service' from 'episodes/episodes.service.ts'
+>
+>       Require stack:
+>       episodes/episodes.service.ts
+>       episodes/episodes.controller.ts
+>       episodes/episodes.controller.spec.ts
+>
+>       1 | import { Injectable } from '@nestjs/common';
+>       > 2 | import { ConfigService } from 'src/config/config.service';
+>           | ^
+>       3 |
+>       4 | @Injectable()
+>       5 | export class EpisodesService {
+>
+>       at Resolver._throwModNotFoundError (../node_modules/jest-resolve/build/resolver.js:427:11)
+>       at Object.<anonymous> (episodes/episodes.service.ts:2:1)
+>       at Object.<anonymous> (episodes/episodes.controller.ts:3:1)
+>       at Object.<anonymous> (episodes/episodes.controller.spec.ts:2:1)
+>
+>   Test Suites: 1 failed, 1 total
+>   Tests:       0 total
+>   Snapshots:   0 total
+>   Time:        1.895 s
+>   Ran all test suites matching /episodes.controller/i.
 
 ```
 
