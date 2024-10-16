@@ -341,7 +341,7 @@ The CLI will automatically add the service in the appropriate folder, and they a
 
 `episodes.service.ts` should contains the **business logic**, is where we handle the data (from a database etc.) and create new method. That allows to isolating logic from controllers.
 
-`providers` are not only used for services, but also for any classes that need to be shared and injected across the applicationm such as **repositories, custom utilities, guards, etc** .
+`providers` are not only used for services, but also for any classes that need to be shared and injected across the application such as **repositories, custom utilities, guards, etc** .
 
 We was talk about **dependency injection**, so now we will see how to use them with the **dependency injection**
 
@@ -387,20 +387,6 @@ export class EpisodesModule {}
 ```
 
 Inside `EpisodesModule`, we have an `EpisodesController` and `EpisodesService` classes.
-
-`episodes.controller.ts`
-
-```typescript
-import { Module } from '@nestjs/common';
-import { ConfigModule } from 'src/config/config.module';
-import { EpisodesController } from './episodes.controller';
-
-@Module({
-    imports: [ConfigModule],
-    controllers: [EpisodesController],
-})
-export class EpisodesModule { }
-```
 
 `episodes.service.ts`
 
@@ -454,3 +440,90 @@ export class EpisodesController {
 In Nest, we don't create an instance of the `EpisodesService` inside the controller. The service will be **injected**  by Nest at runtime. One way to inject the service at the controller, is by using the constructor in our class as we can see above. We add the `private` parameter, following by an alias `episodesService` of type `EpisodesService`. By do that, Nest will creating an instance of the service, and inject it into our `EpisodesController` class. That's how dependency injection is in NestJS.
 
 By using the `@Injectable()` decorator above our `EpisodesService` class, we can say is a **provider class**. As we see earlier, we ensure it is declared on the `EpisodesModule` by using the `providers: []`  attribute, that allows us to inject the service inside the `EpisodesController` with a `constructor`. And now Nest take care of wiring things up at runtime.
+
+Let's create another service to inject and use in `EpisodesService`. We will create a `ConfigService` and add a method `getConfig` which just return a `string` "Hello config":
+
+`CLI`:
+
+```
+❯  nest g s config
+CREATE src/config/config.service.spec.ts (460 bytes)
+CREATE src/config/config.service.ts (90 bytes)
+UPDATE src/config/config.module.ts (163 bytes)
+```
+
+`config.service.spec.ts`
+
+```typescript
+import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from './config.service';
+
+describe('ConfigService', () => {
+  let service: ConfigService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [ConfigService],
+    }).compile();
+
+    service = module.get<ConfigService>(ConfigService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+});
+```
+
+`config.service.ts`:
+
+```typescript
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class ConfigService {
+  helloConfig(): string {
+    return "Hello config";
+  }
+}
+```
+
+Now we want to use the method of `ConfigService` in `EpisodesService`. To do that, we need to add more attribute inside the module decorator of `ConfigModule`, the `exports:[]` attribute:
+
+`config.module.ts`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { ConfigService } from './config.service';
+
+@Module({
+  providers: [ConfigService],
+  exports: [ConfigService],
+})
+export class ConfigModule {}
+```
+
+`exports` allows us to use the `ConfigService` and inject them into another service or controller. Why we should do that ? Because we want to instanciate the `ConfigModule` only at once and use the `getConfig` method everywhere we want by use the independencies injecton, by the way the state will not change each time and it will be persistant, is particulary useful for configuration like here, or for database connection for example.
+
+Now, as we made earlier by `imports` `ConfigModule` into `EpisodesModule`, we can inject the dependency into `EpisodesService` at same way we made to inject `EpisodesService` into `EpisodesController` and create a method `getConfig` who use the method of `ConfigService`:
+
+`episode.service.ts`:
+
+```typescript
+
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from 'src/config/config.service';
+
+@Injectable()
+export class EpisodesService {
+  constructor(private configService: ConfigService) {}
+  getList(): string {
+    return 'list';
+  }
+  getConfig() {
+    return this.configService.helloConfig();
+  }
+}
+```
+
+By the way, this allows us to use single instance of services, which improves testability and separates concerns.
