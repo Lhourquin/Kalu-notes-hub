@@ -527,3 +527,142 @@ export class EpisodesService {
 ```
 
 By the way, this allows us to use single instance of services, which improves testability and separates concerns.
+
+### Testing  
+
+Let's see what we have inside a testing file, here we will see that inside `episodes.controller.spec.ts`:
+
+`episodes.controller.spec.ts`:
+
+```typescript
+
+import { Test, TestingModule } from '@nestjs/testing';
+import { EpisodesController } from './episodes.controller';
+
+describe('EpisodesController', () => {
+  let controller: EpisodesController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [EpisodesController],
+    }).compile();
+
+    controller = module.get<EpisodesController>(EpisodesController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});
+```
+
+If we run the test without modification we have an error:
+
+`CLI`:
+
+```
+> my-podcast-api@0.0.1 test
+> jest episodes.controller
+
+ FAIL  src/episodes/episodes.controller.spec.ts
+  EpisodesController
+    ✕ should be defined (4 ms)
+
+  ● EpisodesController › should be defined
+
+    Nest can't resolve dependencies of the EpisodesController (?). Please make sure that the argumen
+t EpisodesService at index [0] is available in the RootTestModule context.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If EpisodesService is a provider, is it part of the current RootTestModule?
+    - If EpisodesService is exported from a separate @Module, is that module imported within RootTes
+tModule?
+      @Module({
+        imports: [ /* the Module containing EpisodesService */ ]
+      })
+
+       6 |
+       7 |   beforeEach(async () => {
+    >  8 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+       9 |       controllers: [EpisodesController],
+      10 |     }).compile();
+      11 |
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injec
+tor.js:254:19)
+      at TestingInjector.resolveComponentInstance (../node_modules/@nestjs/core/injector/injector.js
+:207:33)
+      at TestingInjector.resolveComponentInstance (../node_modules/@nestjs/testing/testing-injector.
+js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:128:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js
+:143:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:70:13)
+      at TestingInjector.loadController (../node_modules/@nestjs/core/injector/injector.js:88:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:68:13
+          at async Promise.all (index 0)
+      at TestingInstanceLoader.createInstancesOfControllers (../node_modules/@nestjs/core/injector/i
+nstance-loader.js:67:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:42:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loade
+r.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/
+instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testin
+g-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing
+-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:
+9)
+      at Object.<anonymous> (episodes/episodes.controller.spec.ts:8:35)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        1.041 s
+Ran all test suites matching /episodes.controller/i.
+
+```
+
+```> [!WARNING]
+> Be aware, if you have this error, you need to change the path to be relative, when we use the CLI, nest generate a absolute path and this trigger that error.
+❯ npm run test episodes.controller
+
+> my-podcast-api@0.0.1 test
+> jest episodes.controller
+
+ FAIL  src/episodes/episodes.controller.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module 'src/config/config.service' from 'episodes/episodes.service.ts'
+
+    Require stack:
+      episodes/episodes.service.ts
+      episodes/episodes.controller.ts
+      episodes/episodes.controller.spec.ts
+
+      1 | import { Injectable } from '@nestjs/common';
+    > 2 | import { ConfigService } from 'src/config/config.service';
+        | ^
+      3 |
+      4 | @Injectable()
+      5 | export class EpisodesService {
+
+      at Resolver._throwModNotFoundError (../node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (episodes/episodes.service.ts:2:1)
+      at Object.<anonymous> (episodes/episodes.controller.ts:3:1)
+      at Object.<anonymous> (episodes/episodes.controller.spec.ts:2:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        1.895 s
+Ran all test suites matching /episodes.controller/i.
+
+```
+
+That's because the test module builder doesn't know how to inject controller service and config service defined in the controller. So we can import the config class and add the service into the providers.
