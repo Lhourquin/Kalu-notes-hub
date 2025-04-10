@@ -7,3 +7,5 @@ Welcomes to the **Kalu Notes Hub**, the repository where I will upload all my pe
 * [Operating System](/operating-system/)
 * [Tools](/tools/)
 * [Glossary](/glossary/)
+* [Glossary](/glossary/)
+* [languages](/languages/)

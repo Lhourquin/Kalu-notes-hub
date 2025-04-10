@@ -628,6 +628,58 @@ Ran all test suites matching /episodes.controller/i.
 
 ```
 
+That's because the test module builder doesn't know how to inject controller service and config service defined in the controller. So we can import the config class and add the service into the providers.
+
+```typescript
+import { Test, TestingModule } from '@nestjs/testing';
+import { EpisodesController } from './episodes.controller';
+import { ConfigModule } from '../config/config.module';
+import { EpisodesService } from './episodes.service';
+
+describe('EpisodesController', () => {
+  let controller: EpisodesController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule],
+      controllers: [EpisodesController],
+      providers: [EpisodesService],
+    }).compile();
+
+    controller = module.get<EpisodesController>(EpisodesController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});
+```
+
+And now we have success:
+
+`CLI`:
+
+```
+❯ npm run test episodes.controller
+
+> my-podcast-api@0.0.1 test
+> jest episodes.controller
+
+ PASS  src/episodes/episodes.controller.spec.ts
+  EpisodesController
+    ✓ should be defined (5 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        1.087 s
+Ran all test suites matching /episodes.controller/i.
+
+
+```
+
+That's because the episode controller class dependencies can be correctly injected.
+
 ```> [!WARNING]
 >   > Be aware, if you have this error, you need to change the path to be relative, when we use the CLI, nest generate a absolute path and this trigger that error.
 >   ❯ npm run test episodes.controller
@@ -664,5 +716,3 @@ Ran all test suites matching /episodes.controller/i.
 >   Ran all test suites matching /episodes.controller/i.
 
 ```
-
-That's because the test module builder doesn't know how to inject controller service and config service defined in the controller. So we can import the config class and add the service into the providers.
